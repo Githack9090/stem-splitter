@@ -1,6 +1,7 @@
-fastapi
-uvicorn
-python-multipart
-spleeter
-aiofiles
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+spleeter==2.3.0
+aiofiles==23.2.1
 numpy==1.23.5
+tensorflow==2.11.0
