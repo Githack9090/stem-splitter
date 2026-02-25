@@ -1,20 +1,15 @@
-# Usa un'immagine Python ufficiale e leggera
-FROM python:3.9-slim
+# Usa l'immagine ufficiale di Spleeter (già con TensorFlow e numpy compatibili)
+FROM deezer/spleeter:latest
 
-# Installa le dipendenze di sistema necessarie
-RUN apt-get update && apt-get install -y \
-    ffmpeg \
-    libsndfile1 \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+# Installa pip (se non presente) e aggiorna
+RUN apt-get update && apt-get install -y python3-pip && rm -rf /var/lib/apt/lists/*
 
-# Imposta la directory di lavoro
+# Imposta directory di lavoro
 WORKDIR /app
 
-# Copia e installa le dipendenze Python
+# Copia requirements.txt (con solo FastAPI e dipendenze, SENZA numpy, tensorflow, spleeter)
 COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Copia il resto del codice
 COPY . .
