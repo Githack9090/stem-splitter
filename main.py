@@ -52,9 +52,14 @@ async def separate(file: UploadFile = File(...)):
 
     return FileResponse(zip_path, media_type='application/zip', filename="stems.zip")
 
+@app.get("/")
+async def root():
+    return {"message": "Stem Separator API è attiva e funzionante!"}
+
+# ✅ Aggiungi anche un endpoint per health check (utile per monitoraggi)
 @app.get("/health")
-def health_check():
-    return {"status": "ok", "timestamp": datetime.now().isoformat()}
+async def health():
+    return {"status": "ok", "message": "Server is healthy"}
 
 
 if __name__ == "__main__":
