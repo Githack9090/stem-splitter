@@ -1,22 +1,21 @@
-FROM python:3.9-slim
+# Usa un'immagine base che già contiene TensorFlow (riduce i tempi di build)
+FROM tensorflow/tensorflow:2.11.0rc2-python3.9
 
-# Installa le dipendenze di sistema necessarie per numpy, tensorflow e spleeter
+# Installa dipendenze di sistema
 RUN apt-get update && apt-get install -y \
-    build-essential \
     ffmpeg \
     libsndfile1 \
     && rm -rf /var/lib/apt/lists/*
 
-# Imposta la directory di lavoro
+# Imposta directory di lavoro
 WORKDIR /app
 
-# Copia e installa le dipendenze Python
+# Copia requirements e installa dipendenze Python
 COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copia il resto del codice
 COPY . .
 
-# Comando per avviare l'applicazione (usa la porta dall'ambiente)
+# Comando di avvio (usa la porta fornita da Render)
 CMD uvicorn main:app --host 0.0.0.0 --port $PORT
