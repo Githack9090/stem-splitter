@@ -10,6 +10,16 @@ import aiofiles
 
 app = FastAPI()
 
+def trim_audio(input_path, output_path, max_duration=60):
+    cmd = [
+        "ffmpeg", "-i", input_path, "-t", str(max_duration),
+        "-c", "copy", output_path, "-y"
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        raise Exception(f"FFmpeg error: {result.stderr}")
+    return output_path
+
 # Abilita CORS per permettere chiamate dal frontend
 app.add_middleware(
     CORSMiddleware,
@@ -25,7 +35,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # Limite di durata del file (in secondi) per non saturare la RAM
-MAX_DURATION_SECONDS = 60  # Puoi aumentare se passi a un piano con più RAM
+MAX_DURATION_SECONDS = 15  # Puoi aumentare se passi a un piano con più RAM
 
 @app.get("/")
 async def root():
@@ -54,6 +64,10 @@ async def separate_audio(file: UploadFile = File(...)):
     async with aiofiles.open(input_path, "wb") as buffer:
         content = await file.read()
         await buffer.write(content)
+
+    
+    trimmed_path = os.path.join(UPLOAD_DIR, f"{file_id}_trimmed.mp3")
+    trim_audio(input_path, trimmed_path, MAX_DURATION_SECONDS)
 
     try:
         # 3. (Opzionale) Qui potresti aggiungere un controllo della durata con ffprobe
