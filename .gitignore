@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+env/
+.python-version
+
+# Upload e output (se vuoi escludere le cartelle temporanee)
+uploads/
+outputs/
+
+# IDE
+.vscode/
+.idea/
+
+# File di sistema
+.DS_Store
+Thumbs.db
