@@ -3,3 +3,4 @@ uvicorn
 python-multipart
 spleeter
 aiofiles
+numpy==1.23.5
